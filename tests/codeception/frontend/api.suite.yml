@@ -1,0 +1,20 @@
+class_name: ApiTester
+modules:
+    enabled:
+      - tests\codeception\components\Yii2
+      - PhpBrowser
+      - REST
+      - Asserts
+      - tests\codeception\frontend\_helpers\AuthorizeHelper
+    depends:
+        REST: PhpBrowser
+    config:
+        PhpBrowser:
+            url: 'http://frontend.local/index-test.php/'
+        tests\codeception\components\Yii2:
+            configFile: '../config/frontend/functional.php'
+            transaction: false
+            cleanup: true
+        REST:
+            depends: PhpBrowser
+            url: 'http://frontend.local/index-test.php/'

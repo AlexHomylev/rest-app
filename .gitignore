@@ -1,0 +1,10 @@
+/yii
+/vendor
+/.idea
+/setenv.php
+
+# npm files
+/node_modules
+node_modules
+
+composer

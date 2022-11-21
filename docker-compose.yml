@@ -1,0 +1,56 @@
+php:
+  build: ./
+  working_dir: /var/www/html/
+  ports:
+    - "8010:80"
+    - "9319:9306"
+    - "9091:9090"
+  expose:
+    - "80"
+    - "9306"
+  volumes:
+    - ./:/var/www/html/
+    - ./docker/vhosts/:/etc/apache2/sites-enabled/
+    - ~/.ssh/id_rsa:/root/.ssh/id_rsa
+    - ./docker/php/apache/php.ini:/etc/php/7.2/apache2/php.ini
+  links:
+    - postgres
+    - redis
+    - minio
+  environment:
+    - SSH_AUTH_SOCK=/tmp/agent.sock
+    - TERM=xterm-256color
+  extra_hosts:
+    - "backend.local:127.0.0.1"
+    - "frontend.local:127.0.0.1"
+postgres:
+  privileged: true
+  image: postgres:latest
+  ports:
+    - "5445:5432"
+  expose:
+    - "5432"
+  environment:
+    POSTGRES_DATABASE: web
+    POSTGRES_USER: web
+    POSTGRES_PASSWORD: web
+    POSTGRES_USE_RAM: 1
+redis:
+  image: redis:3
+  ports:
+    - "6389:6379"
+  expose:
+    - "6379"
+minio:
+  image: minio/minio
+  ports:
+    - "9000:9000"
+  expose:
+    - "9000"
+  environment:
+    MINIO_ACCESS_KEY: minio
+    MINIO_SECRET_KEY: minio124
+  command: server /export
+  volumes:
+    - ./docker/minio/data:/export
+    - ./docker/minio/config:/root/.minio
